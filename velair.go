@@ -181,7 +181,7 @@ func ParseRawStatus(data []byte) (*DeviceStatus, error) {
 		return nil, err
 	}
 
-	if raw.Success == false {
+	if !raw.Success {
 		if raw.Error != "" {
 			return nil, fmt.Errorf("error from device %s", raw.Error)
 		}
@@ -235,6 +235,9 @@ func (c *Client) SetNightMode(ctx context.Context, enable bool) error {
 		c.baseURL+"/api/v/1/set/feature/night",
 		strings.NewReader(values.Encode()),
 	)
+	if err != nil {
+		return err
+	}
 
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
@@ -275,7 +278,7 @@ func parseCommandResponse(r io.Reader) (bool, error) {
 		return false, err
 	}
 
-	if resp.Success == false {
+	if !resp.Success {
 		if resp.Error != "" {
 			return true, fmt.Errorf("error from device %s", resp.Error)
 		}
@@ -303,6 +306,9 @@ func (c *Client) SetFanSpeed(ctx context.Context, speed FanSpeed) error {
 		c.baseURL+"/api/v/1/set/fan",
 		strings.NewReader(values.Encode()),
 	)
+	if err != nil {
+		return err
+	}
 
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
@@ -335,6 +341,9 @@ func (c *Client) SetMode(ctx context.Context, mode DeviceMode) error {
 		c.baseURL+"/api/v/1/set/mode/"+mode.String(),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	resp, err := c.doer.Do(req)
 	if err != nil {
