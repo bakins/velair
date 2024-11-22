@@ -20,6 +20,46 @@ type Client struct {
 	baseURL string
 }
 
+// New creates a new Client
+func New(baseURL string, options ...ClientOption) (*Client, error) {
+	u, err := url.Parse(baseURL)
+	if err != nil {
+		return nil, err
+	}
+
+	c := &Client{
+		baseURL: u.String(),
+		doer:    http.DefaultClient,
+	}
+
+	for _, o := range options {
+		if err := o.apply(c); err != nil {
+			return nil, err
+		}
+	}
+
+	return c, nil
+}
+
+// ClientOption sets options for new clients
+type ClientOption interface {
+	apply(*Client) error
+}
+
+type clientOptionFunc func(*Client) error
+
+func (f clientOptionFunc) apply(c *Client) error {
+	return f(c)
+}
+
+// WithDoer sets the http doer. http.DefaultClient is used by default.
+func WithDoer(d Doer) ClientOption {
+	return clientOptionFunc(func(c *Client) error {
+		c.doer = d
+		return nil
+	})
+}
+
 // Doer allows replacing the http client
 // See https://pkg.go.dev/net/http#Client
 type Doer interface {
