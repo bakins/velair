@@ -271,7 +271,7 @@ func (c *Client) SetNightMode(ctx context.Context, enable bool) error {
 
 	req, err := http.NewRequestWithContext(
 		ctx,
-		http.MethodGet,
+		http.MethodPost,
 		c.baseURL+"/api/v/1/set/feature/night",
 		strings.NewReader(values.Encode()),
 	)
@@ -342,7 +342,7 @@ func (c *Client) SetFanSpeed(ctx context.Context, speed FanSpeed) error {
 
 	req, err := http.NewRequestWithContext(
 		ctx,
-		http.MethodGet,
+		http.MethodPost,
 		c.baseURL+"/api/v/1/set/fan",
 		strings.NewReader(values.Encode()),
 	)
@@ -377,7 +377,7 @@ func (c *Client) SetFanSpeed(ctx context.Context, speed FanSpeed) error {
 func (c *Client) SetMode(ctx context.Context, mode DeviceMode) error {
 	req, err := http.NewRequestWithContext(
 		ctx,
-		http.MethodGet,
+		http.MethodPost,
 		c.baseURL+"/api/v/1/set/mode/"+mode.String(),
 		nil,
 	)
