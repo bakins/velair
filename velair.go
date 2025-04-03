@@ -403,3 +403,38 @@ func (c *Client) SetMode(ctx context.Context, mode DeviceMode) error {
 
 	return err
 }
+
+// SetPoint sets the target temperature in C.
+func (c *Client) SetPoint(ctx context.Context, temperature int) error {
+	values := url.Values{}
+
+	values.Set("p_temp", strconv.Itoa(temperature))
+
+	req, err := http.NewRequestWithContext(
+		ctx,
+		http.MethodPost,
+		c.baseURL+"/set/setpoint",
+		strings.NewReader(values.Encode()),
+	)
+	if err != nil {
+		return err
+	}
+
+	resp, err := c.doer.Do(req)
+	if err != nil {
+		return err
+	}
+
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("unexpected HTTP status code %d", resp.StatusCode)
+	}
+
+	ok, err := parseCommandResponse(req.Body)
+	if !ok {
+		return fmt.Errorf("failed to parse response %w", err)
+	}
+
+	return err
+}
