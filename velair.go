@@ -197,6 +197,7 @@ func (c *Client) GetStatus(ctx context.Context) (*DeviceStatus, error) {
 		return nil, err
 	}
 
+	// nolint: errcheck
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
@@ -286,6 +287,7 @@ func (c *Client) SetNightMode(ctx context.Context, enable bool) error {
 		return err
 	}
 
+	// nolint: errcheck
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
@@ -357,6 +359,7 @@ func (c *Client) SetFanSpeed(ctx context.Context, speed FanSpeed) error {
 		return err
 	}
 
+	// nolint: errcheck
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
@@ -390,6 +393,7 @@ func (c *Client) SetMode(ctx context.Context, mode DeviceMode) error {
 		return err
 	}
 
+	// nolint: errcheck
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
@@ -425,6 +429,7 @@ func (c *Client) SetPoint(ctx context.Context, temperature int) error {
 		return err
 	}
 
+	// nolint: errcheck
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
