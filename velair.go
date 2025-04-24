@@ -417,7 +417,7 @@ func (c *Client) SetPoint(ctx context.Context, temperature int) error {
 	req, err := http.NewRequestWithContext(
 		ctx,
 		http.MethodPost,
-		c.baseURL+"/set/setpoint",
+		c.baseURL+"/api/v/1/set/setpoint",
 		strings.NewReader(values.Encode()),
 	)
 	if err != nil {
