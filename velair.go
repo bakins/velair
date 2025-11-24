@@ -294,7 +294,7 @@ func (c *Client) SetNightMode(ctx context.Context, enable bool) error {
 		return fmt.Errorf("unexpected HTTP status code %d", resp.StatusCode)
 	}
 
-	ok, err := parseCommandResponse(req.Body)
+	ok, err := parseCommandResponse(resp.Body)
 	if !ok {
 		return fmt.Errorf("failed to parse response %w", err)
 	}
@@ -366,7 +366,7 @@ func (c *Client) SetFanSpeed(ctx context.Context, speed FanSpeed) error {
 		return fmt.Errorf("unexpected HTTP status code %d", resp.StatusCode)
 	}
 
-	ok, err := parseCommandResponse(req.Body)
+	ok, err := parseCommandResponse(resp.Body)
 	if !ok {
 		return fmt.Errorf("failed to parse response %w", err)
 	}
@@ -400,7 +400,7 @@ func (c *Client) SetMode(ctx context.Context, mode DeviceMode) error {
 		return fmt.Errorf("unexpected HTTP status code %d", resp.StatusCode)
 	}
 
-	ok, err := parseCommandResponse(req.Body)
+	ok, err := parseCommandResponse(resp.Body)
 	if !ok {
 		return fmt.Errorf("failed to parse response %w", err)
 	}
@@ -417,12 +417,14 @@ func (c *Client) SetPoint(ctx context.Context, temperature int) error {
 	req, err := http.NewRequestWithContext(
 		ctx,
 		http.MethodPost,
-		c.baseURL+"/set/setpoint",
+		c.baseURL+"/api/v/1/set/setpoint",
 		strings.NewReader(values.Encode()),
 	)
 	if err != nil {
 		return err
 	}
+
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 	resp, err := c.doer.Do(req)
 	if err != nil {
@@ -436,7 +438,7 @@ func (c *Client) SetPoint(ctx context.Context, temperature int) error {
 		return fmt.Errorf("unexpected HTTP status code %d", resp.StatusCode)
 	}
 
-	ok, err := parseCommandResponse(req.Body)
+	ok, err := parseCommandResponse(resp.Body)
 	if !ok {
 		return fmt.Errorf("failed to parse response %w", err)
 	}
