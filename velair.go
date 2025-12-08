@@ -76,11 +76,12 @@ const (
 	FanSpeedMedium  FanSpeed = 2
 	FanSpeedHigh    FanSpeed = 3
 	FanSpeedMaximum FanSpeed = 4
+	FanSpeedOff     FanSpeed = 7
 )
 
 // FanSpeedFromInt convertes from an integer to FanSpeed
 func FanSpeedFromInt(in int) (FanSpeed, error) {
-	if in >= 0 && in <= 4 {
+	if (in >= 0 && in <= 4) || in == 7 {
 		return FanSpeed(in), nil
 	}
 
@@ -100,6 +101,8 @@ func (f FanSpeed) String() string {
 		return "high"
 	case FanSpeedMaximum:
 		return "maximum"
+	case FanSpeedOff:
+		return "off"
 	}
 
 	return "unknown"
@@ -240,6 +243,13 @@ func ParseRawStatus(data []byte) (*DeviceStatus, error) {
 		Temperature: raw.Result.Temperature,
 	}
 
+	status.Power = raw.Result.Power == 1
+
+	// the other settings will not be valid
+	if !status.Power {
+		return &status, nil
+	}
+
 	status.FanSpeed, err = FanSpeedFromInt(raw.Result.FanSpeed)
 	if err != nil {
 		return nil, err
@@ -251,7 +261,6 @@ func ParseRawStatus(data []byte) (*DeviceStatus, error) {
 	}
 
 	status.NightMode = raw.Result.NightMode == 1
-	status.Power = raw.Result.Power == 1
 
 	return &status, nil
 }
